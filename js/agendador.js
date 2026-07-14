@@ -466,7 +466,7 @@
   }
 
   // Todo lo que pasa después de guardar la cita con éxito: WhatsApp, Google
-  // Calendar, .ics, aviso al profesional (Apps Script + EmailJS) y la pantalla
+  // Calendar, aviso al profesional (Apps Script + EmailJS) y la pantalla
   // de confirmación. Se mantiene igual a como funcionaba antes de Supabase.
   function mostrarConfirmacion(nombreVal, telefonoVal, barbero, servicio, horaInicio){
     var horaTxt = horaAmPm(horaInicio);
@@ -485,8 +485,8 @@
               "\nServicio: "+servicio+"\nFecha: "+fechaLargaCita+"\nHora: "+horaTxt+"\nNos vemos ese día.";
     var btnWhatsapp = document.getElementById("btnWhatsapp");
     btnWhatsapp.href = "https://wa.me/"+telefonoBarbero+"?text="+encodeURIComponent(msg);
-    btnWhatsapp.dataset.textoOriginal = "Avisar a tu "+barbero+" por WhatsApp";
-    btnWhatsapp.dataset.textoEnviado = "✅ Aviso enviado a tu "+barbero;
+    btnWhatsapp.dataset.textoOriginal = "Avisar a "+barbero+" por WhatsApp";
+    btnWhatsapp.dataset.textoEnviado = "✅ Aviso enviado a "+barbero;
     document.getElementById("btnWhatsappTexto").textContent = btnWhatsapp.dataset.textoOriginal;
 
     // Aviso al dueño (push/navegador) cuando la reserva incluye un corte de pelo
@@ -500,18 +500,11 @@
     // Aviso automático al profesional vía Google Apps Script (correo + evento en su Google Calendar)
     avisarAppsScript(nombreVal, telefonoVal, servicio, estado.fecha, horaInicio);
 
-    // Archivo de calendario (.ics)
     var ini = new Date(fechaCita);
     ini.setHours(parseInt(horaInicio.split(":")[0],10),
                  parseInt(horaInicio.split(":")[1],10),0,0);
     var duracion = DURACIONES[servicio] || 30;
     var fin = new Date(ini.getTime()+duracion*60000);
-    var ics = "BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Fraynid Barbershop//ES\r\n"+
-      "BEGIN:VEVENT\r\nUID:"+Date.now()+"@barberia\r\nDTSTART:"+fIcs(ini)+
-      "\r\nDTEND:"+fIcs(fin)+"\r\nSUMMARY:Cita en Fraynid Barbershop — "+servicio+
-      "\r\nDESCRIPTION:Barbero: "+barbero+"\r\nEND:VEVENT\r\nEND:VCALENDAR";
-    document.getElementById("btnCalendario").href =
-      "data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
 
     // Enlace de Google Calendar para el cliente (lo confirma con un clic; no requiere iniciar sesión)
     var zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone;

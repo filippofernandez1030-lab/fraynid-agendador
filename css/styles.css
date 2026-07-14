@@ -307,7 +307,6 @@
     transition:transform .1s;
   }
   .btn-accion:active{transform:scale(.98);}
-  .btn-calendario{background:var(--negro);color:var(--blanco);border:none;}
   .btn-whatsapp{background:var(--blanco);color:var(--negro);border:2px solid var(--negro);}
   .btn-google{background:var(--azul);color:var(--blanco);border:none;}
   .btn-accion .icono{font-size:22px;}
