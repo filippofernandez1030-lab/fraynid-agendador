@@ -122,11 +122,6 @@
   }
   .servicio-regla{width:26px;height:2px;background:var(--negro);transition:background .2s;}
   .servicio-sub{font-size:12px;color:var(--gris-oscuro);text-align:center;transition:color .2s;}
-  .servicio-precio{
-    font-family:'Oswald',sans-serif;font-size:13px;font-weight:600;
-    color:var(--dorado);text-align:center;transition:color .2s;
-  }
-  .servicio.activo .servicio-precio{color:var(--dorado);}
   .servicio-check{
     position:absolute;top:10px;right:10px;
     width:22px;height:22px;border-radius:50%;
@@ -325,6 +320,7 @@
   .btn-accion:active{transform:scale(.98);}
   .btn-calendario{background:var(--negro);color:var(--blanco);border:none;}
   .btn-whatsapp{background:var(--blanco);color:var(--negro);border:2px solid var(--negro);}
+  .btn-google{background:var(--azul);color:var(--blanco);border:none;}
   .btn-accion .icono{font-size:22px;}
   .nueva-reserva{
     display:inline-block;margin-top:26px;
@@ -357,28 +353,24 @@
           <span class="servicio-nombre">Corte</span>
           <span class="servicio-regla" aria-hidden="true"></span>
           <span class="servicio-sub">Clásico o moderno</span>
-          <span class="servicio-precio">RD$400</span>
         </button>
         <button type="button" class="servicio" data-servicio="Barba" role="radio" aria-checked="false">
           <span class="servicio-check" aria-hidden="true">✓</span>
           <span class="servicio-nombre">Barba</span>
           <span class="servicio-regla" aria-hidden="true"></span>
           <span class="servicio-sub">Perfilado profesional</span>
-          <span class="servicio-precio">RD$300</span>
         </button>
         <button type="button" class="servicio" data-servicio="Corte + Barba" role="radio" aria-checked="false">
           <span class="servicio-check" aria-hidden="true">✓</span>
           <span class="servicio-nombre">Corte + Barba</span>
           <span class="servicio-regla" aria-hidden="true"></span>
           <span class="servicio-sub">El combo completo</span>
-          <span class="servicio-precio">RD$450</span>
         </button>
         <button type="button" class="servicio" data-servicio="Afeitado" role="radio" aria-checked="false">
           <span class="servicio-check" aria-hidden="true">✓</span>
           <span class="servicio-nombre">Afeitado</span>
           <span class="servicio-regla" aria-hidden="true"></span>
           <span class="servicio-sub">Navaja tradicional</span>
-          <span class="servicio-precio">RD$350</span>
         </button>
       </div>
     </section>
@@ -459,11 +451,14 @@
     </dl>
 
     <div class="acciones">
-      <a class="btn-accion btn-calendario" id="btnCalendario" download="cita-barberia.ics">
-        <span class="icono" aria-hidden="true">📅</span>Agregar al calendario
-      </a>
       <a class="btn-accion btn-whatsapp" id="btnWhatsapp" target="_blank" rel="noopener">
-        <span class="icono" aria-hidden="true">💬</span>Abrir WhatsApp
+        <span class="icono" aria-hidden="true">💬</span><span id="btnWhatsappTexto">Avisar por WhatsApp</span>
+      </a>
+      <a class="btn-accion btn-google" id="btnGoogleCalendar" target="_blank" rel="noopener">
+        <span class="icono" aria-hidden="true">🗓️</span>Guardar en Google Calendar
+      </a>
+      <a class="btn-accion btn-calendario" id="btnCalendario" download="cita-barberia.ics">
+        <span class="icono" aria-hidden="true">📅</span>Descargar .ics (alternativa)
       </a>
     </div>
 
@@ -495,12 +490,32 @@
   var EMAILJS_SERVICE_ID  = "service_kr1cfan";
   var EMAILJS_TEMPLATE_ID = "template_4kxocmh";
   var CORREOS_BARBEROS = {
-    "Fraynid": "filippofernandez1030@gmail.com",
-    "Manuel": "filippofernandez10@gmail.com"
+    "Fraynid": "Fraynidbarbershop@gmail.com",
+    "Manuel": "Fraynidbarbershop@gmail.com"
   };
 
   if(window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("TU_")!==0){
     emailjs.init(EMAILJS_PUBLIC_KEY);
+  }
+
+  // ---------- Aviso automático al profesional (correo + evento en SU Google Calendar) ----------
+  // Desplegado en script.google.com como Aplicación web ("Yo" / "Cualquier usuario").
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqFmqGPeay4LG5adSjU-nBcRBfpje89MckMa3leOQJfVuD1J5oSgj2-vbmMygX0KiE/exec";
+
+  function avisarAppsScript(nombreVal, telefonoVal, servicio, fechaISO, horaVal){
+    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("URL_")===0) return;
+    fetch(APPS_SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        servicio: servicio,
+        fecha: fechaISO,
+        hora: horaVal,
+        nombre: nombreVal,
+        telefono: telefonoVal
+      })
+    }).catch(function(){ /* sin conexión o error: se ignora, no bloquea la reserva */ });
   }
 
   function notificarCorreoBarbero(nombreVal, fechaTxt, horaTxt, barbero, telefonoVal){
@@ -795,8 +810,11 @@
     // WhatsApp con mensaje ya escrito, al barbero elegido
     var msg = "Hola "+barbero+".\nAcabo de reservar una cita.\nNombre: "+nombreVal+
               "\nServicio: "+estado.servicio+"\nFecha: "+fechaLargaCita+"\nHora: "+horaTxt+"\nNos vemos ese día.";
-    document.getElementById("btnWhatsapp").href =
-      "https://wa.me/"+telefonoBarbero+"?text="+encodeURIComponent(msg);
+    var btnWhatsapp = document.getElementById("btnWhatsapp");
+    btnWhatsapp.href = "https://wa.me/"+telefonoBarbero+"?text="+encodeURIComponent(msg);
+    btnWhatsapp.dataset.textoOriginal = "Avisar a tu "+barbero+" por WhatsApp";
+    btnWhatsapp.dataset.textoEnviado = "✅ Aviso enviado a tu "+barbero;
+    document.getElementById("btnWhatsappTexto").textContent = btnWhatsapp.dataset.textoOriginal;
 
     // Aviso al dueño (push/navegador) cuando la reserva incluye un corte de pelo
     if(estado.servicio.indexOf("Corte")!==-1){
@@ -805,6 +823,9 @@
 
     // Correo automático al barbero elegido, sin importar el servicio
     notificarCorreoBarbero(nombreVal, fechaLargaCita, horaTxt, barbero, telefonoVal);
+
+    // Aviso automático al profesional vía Google Apps Script (correo + evento en su Google Calendar)
+    avisarAppsScript(nombreVal, telefonoVal, estado.servicio, estado.fecha, estado.hora);
 
     // Archivo de calendario (.ics)
     var ini = new Date(fechaCita);
@@ -823,6 +844,17 @@
     document.getElementById("btnCalendario").href =
       "data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);
 
+    // Enlace de Google Calendar para el cliente (lo confirma con un clic; no requiere iniciar sesión)
+    var zonaHoraria = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    var detallesGCal = "Barbero: "+barbero+"\nCliente: "+nombreVal+"\nTeléfono: "+telefonoVal;
+    document.getElementById("btnGoogleCalendar").href =
+      "https://calendar.google.com/calendar/render?action=TEMPLATE"+
+      "&text="+encodeURIComponent("Cita en Fraynid Barbershop — "+estado.servicio)+
+      "&dates="+fIcs(ini)+"/"+fIcs(fin)+
+      "&ctz="+encodeURIComponent(zonaHoraria)+
+      "&details="+encodeURIComponent(detallesGCal)+
+      "&location="+encodeURIComponent("Fraynid Barbershop");
+
     // Mostrar confirmación en la misma pantalla
     document.getElementById("reserva").style.display="none";
     document.getElementById("barraReservar").style.display="none";
@@ -830,9 +862,16 @@
     window.scrollTo({top:0,behavior:"smooth"});
   });
 
+  // Al hacer clic no se bloquea la apertura de WhatsApp: solo se actualiza el texto del botón.
+  document.getElementById("btnWhatsapp").addEventListener("click",function(){
+    var texto = document.getElementById("btnWhatsappTexto");
+    if(this.dataset.textoEnviado) texto.textContent = this.dataset.textoEnviado;
+  });
+
   document.getElementById("btnNueva").addEventListener("click",function(){
     estado = {servicio:null,barbero:null,fecha:null,hora:null};
     nombre.value=""; telefono.value="";
+    document.getElementById("btnWhatsappTexto").textContent = "Avisar por WhatsApp";
     document.querySelectorAll(".activo").forEach(function(b){
       b.classList.remove("activo"); b.setAttribute("aria-checked","false");
     });
