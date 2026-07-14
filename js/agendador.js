@@ -15,22 +15,6 @@
   // Instala la app ntfy (Android/iOS) o entra a https://ntfy.sh/app y suscríbete a este mismo tema.
   var NTFY_TOPIC = "fraynid-barbershop-reservas-83417";
 
-  // ---------- Correo automático al barbero (EmailJS) ----------
-  // Completa estos 3 datos con los que te da tu cuenta gratuita en https://www.emailjs.com
-  // (Email Services > tu servicio = SERVICE_ID; Email Templates > tu plantilla = TEMPLATE_ID;
-  // Account > General = PUBLIC_KEY). Mientras no los cambies, el correo no se enviará.
-  var EMAILJS_PUBLIC_KEY = "I-5fJv7xG41ElV7fG";
-  var EMAILJS_SERVICE_ID  = "service_kr1cfan";
-  var EMAILJS_TEMPLATE_ID = "template_4kxocmh";
-  var CORREOS_BARBEROS = {
-    "Fraynid": "Fraynidbarbershop@gmail.com",
-    "Manuel": "Fraynidbarbershop@gmail.com"
-  };
-
-  if(window.emailjs && EMAILJS_PUBLIC_KEY.indexOf("TU_")!==0){
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-  }
-
   // ---------- Aviso automático al profesional (correo + evento en SU Google Calendar) ----------
   // Desplegado en script.google.com como Aplicación web ("Yo" / "Cualquier usuario").
   var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqFmqGPeay4LG5adSjU-nBcRBfpje89MckMa3leOQJfVuD1J5oSgj2-vbmMygX0KiE/exec";
@@ -49,19 +33,6 @@
         telefono: telefonoVal
       })
     }).catch(function(){ /* sin conexión o error: se ignora, no bloquea la reserva */ });
-  }
-
-  function notificarCorreoBarbero(nombreVal, fechaTxt, horaTxt, barbero, telefonoVal){
-    if(!window.emailjs || EMAILJS_TEMPLATE_ID.indexOf("TU_")===0) return;
-    var destino = CORREOS_BARBEROS[barbero];
-    if(!destino) return;
-    // Coincide con las variables de tu plantilla de EmailJS: {{name}}, {{time}}, {{message}}
-    emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-      to_email: destino,
-      name: nombreVal,
-      time: fechaTxt+" a las "+horaTxt,
-      message: "Reservó "+estado.servicio+" con "+barbero+". Teléfono: "+telefonoVal
-    }).catch(function(){ /* si falla el envío no bloquea la reserva */ });
   }
 
   var estado = { servicio:null, barbero:null, fecha:null, hora:null };
@@ -466,8 +437,8 @@
   }
 
   // Todo lo que pasa después de guardar la cita con éxito: WhatsApp, Google
-  // Calendar, aviso al profesional (Apps Script + EmailJS) y la pantalla
-  // de confirmación. Se mantiene igual a como funcionaba antes de Supabase.
+  // Calendar, aviso al profesional vía Apps Script, y la pantalla de
+  // confirmación. Se mantiene igual a como funcionaba antes de Supabase.
   function mostrarConfirmacion(nombreVal, telefonoVal, barbero, servicio, horaInicio){
     var horaTxt = horaAmPm(horaInicio);
     var telefonoBarbero = BARBEROS[barbero];
@@ -493,9 +464,6 @@
     if(servicio.indexOf("Corte")!==-1){
       notificarNuevoCorte(nombreVal, fechaLargaCita, horaTxt, barbero);
     }
-
-    // Correo automático al barbero elegido, sin importar el servicio
-    notificarCorreoBarbero(nombreVal, fechaLargaCita, horaTxt, barbero, telefonoVal);
 
     // Aviso automático al profesional vía Google Apps Script (correo + evento en su Google Calendar)
     avisarAppsScript(nombreVal, telefonoVal, servicio, estado.fecha, horaInicio);
