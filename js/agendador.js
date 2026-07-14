@@ -17,9 +17,9 @@
 
   // ---------- Aviso automático al profesional (correo + evento en SU Google Calendar) ----------
   // Desplegado en script.google.com como Aplicación web ("Yo" / "Cualquier usuario").
-  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwqFmqGPeay4LG5adSjU-nBcRBfpje89MckMa3leOQJfVuD1J5oSgj2-vbmMygX0KiE/exec";
+  var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxTQl3dv6WuZU7NT0N3c63BqXz0CceuAhfNvjjjXSQwOkec1ebCIkFjKd9zrXrIm9MW/exec";
 
-  function avisarAppsScript(nombreVal, telefonoVal, servicio, fechaISO, horaVal){
+  function avisarAppsScript(nombreVal, telefonoVal, servicio, fechaISO, horaVal, duracionVal){
     if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.indexOf("URL_")===0) return;
     fetch(APPS_SCRIPT_URL, {
       method: "POST",
@@ -29,6 +29,7 @@
         servicio: servicio,
         fecha: fechaISO,
         hora: horaVal,
+        duracion: duracionVal,
         nombre: nombreVal,
         telefono: telefonoVal
       })
@@ -466,7 +467,7 @@
     }
 
     // Aviso automático al profesional vía Google Apps Script (correo + evento en su Google Calendar)
-    avisarAppsScript(nombreVal, telefonoVal, servicio, estado.fecha, horaInicio);
+    avisarAppsScript(nombreVal, telefonoVal, servicio, estado.fecha, horaInicio, DURACIONES[servicio] || 30);
 
     var ini = new Date(fechaCita);
     ini.setHours(parseInt(horaInicio.split(":")[0],10),
