@@ -74,30 +74,6 @@
     padding:8px 16px;border-radius:99px;
   }
 
-  /* ---- Aviso: cita previa y pago anticipado ---- */
-  .aviso-cita{
-    margin-top:22px;
-    background:var(--gris-claro);
-    border:2px solid var(--dorado);
-    border-radius:var(--radio);
-    padding:20px 20px 18px;
-  }
-  .aviso-titulo{
-    font-family:'Oswald',sans-serif;font-size:18px;font-weight:600;
-    margin-bottom:8px;
-  }
-  .aviso-subtitulo{font-weight:700;margin-top:14px;margin-bottom:8px;}
-  .aviso-texto{font-size:14.5px;color:var(--gris-oscuro);margin-top:6px;}
-  .aviso-cuenta{
-    background:var(--blanco);
-    border-radius:12px;
-    padding:12px 16px;
-    display:flex;flex-direction:column;gap:4px;
-  }
-  .aviso-cuenta-nombre{font-weight:700;margin-bottom:2px;}
-  .aviso-cuenta-fila{font-size:14.5px;color:var(--gris-oscuro);}
-  .aviso-cuenta-fila strong{color:var(--negro);}
-
   /* ---- Casilla de aceptación del aviso (paso 7) ---- */
   .aviso-check{
     display:flex;align-items:flex-start;gap:12px;
