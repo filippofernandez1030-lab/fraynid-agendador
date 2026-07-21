@@ -39,8 +39,8 @@
   var estado = { servicio:null, barbero:null, fecha:null, hora:null };
 
   // ---------- Modal del régimen de consecuencia (10 min de tolerancia / 40% de penalización) ----------
-  // Se muestra una sola vez por visita, justo cuando el cliente llega a elegir fecha y hora
-  // (el momento en que está a punto de comprometer un horario).
+  // Se muestra una sola vez por visita, justo al terminar de elegir fecha y hora
+  // (el momento en que el cliente ya comprometió un horario específico).
   var modalAvisoMostrado = false;
   var modalAviso = document.getElementById("modalAviso");
   var modalAvisoBtn = document.getElementById("modalAvisoBtn");
@@ -284,6 +284,7 @@
     actualizar();
     document.getElementById("paso5").scrollIntoView({behavior:"smooth",block:"start"});
     nombre.focus({preventScroll:true});
+    mostrarModalAviso();
   }
 
   rangoBtns.forEach(function(b){
@@ -337,7 +338,6 @@
         });
       }
       document.getElementById("paso3").scrollIntoView({behavior:"smooth",block:"start"});
-      mostrarModalAviso();
     });
   });
 

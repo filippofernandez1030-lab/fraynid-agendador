@@ -97,14 +97,6 @@
   .aviso-cuenta-nombre{font-weight:700;margin-bottom:2px;}
   .aviso-cuenta-fila{font-size:14.5px;color:var(--gris-oscuro);}
   .aviso-cuenta-fila strong{color:var(--negro);}
-  .aviso-regla{
-    margin-top:14px;
-    border-top:1px solid rgba(17,17,17,.1);
-    padding-top:12px;
-  }
-  .aviso-regla p{font-size:14.5px;color:var(--gris-oscuro);margin-top:6px;}
-  .aviso-regla p:first-child{margin-top:0;}
-  .aviso-regla strong{color:var(--rojo);}
 
   /* ---- Casilla de aceptación del aviso (paso 7) ---- */
   .aviso-check{
