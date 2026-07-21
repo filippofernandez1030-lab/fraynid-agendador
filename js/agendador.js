@@ -237,7 +237,7 @@
     var duracion = DURACIONES[estado.servicio] || 45;
     var huboDisponibles = false;
 
-    for(var min=HORA_APERTURA; min<=ULTIMA_HORA_INICIO; min+=30){
+    for(var min=HORA_APERTURA; min<=ULTIMA_HORA_INICIO; min+=45){
       var hStr = minutosAHora(min);
       var finCita = min + duracion;
       var excedeCierre = finCita > HORA_CIERRE;
