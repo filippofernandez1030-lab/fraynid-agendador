@@ -5,11 +5,12 @@
     "Manuel": "8492675893"
   };
   // Duración de cada servicio en minutos (usada para calcular hora_fin y disponibilidad).
+  // El barbero se toma 45 minutos sin importar el servicio elegido.
   var DURACIONES = {
-    "Corte": 30,
-    "Barba": 30,
-    "Corte + Barba": 60,
-    "Afeitado": 30
+    "Corte": 45,
+    "Barba": 45,
+    "Corte + Barba": 45,
+    "Afeitado": 45
   };
   // Tema privado de ntfy.sh donde llegan los avisos de reserva a tu celular.
   // Instala la app ntfy (Android/iOS) o entra a https://ntfy.sh/app y suscríbete a este mismo tema.
@@ -233,7 +234,7 @@
     var esHoy = fechaSeleccionada.getFullYear()===hoy.getFullYear() &&
                 fechaSeleccionada.getMonth()===hoy.getMonth() &&
                 fechaSeleccionada.getDate()===hoy.getDate();
-    var duracion = DURACIONES[estado.servicio] || 30;
+    var duracion = DURACIONES[estado.servicio] || 45;
     var huboDisponibles = false;
 
     for(var min=HORA_APERTURA; min<=ULTIMA_HORA_INICIO; min+=30){
@@ -409,7 +410,7 @@
     var telefonoVal = telefono.value.trim();
     var barbero = estado.barbero;
     var servicio = estado.servicio;
-    var duracion = DURACIONES[servicio] || 30;
+    var duracion = DURACIONES[servicio] || 45;
     var horaInicio = estado.hora;
     var horaFin = minutosAHora(horaAMinutos(horaInicio) + duracion);
 
@@ -487,12 +488,12 @@
     }
 
     // Aviso automático al profesional vía Google Apps Script (correo + evento en su Google Calendar)
-    avisarAppsScript(nombreVal, telefonoVal, servicio, estado.fecha, horaInicio, DURACIONES[servicio] || 30);
+    avisarAppsScript(nombreVal, telefonoVal, servicio, estado.fecha, horaInicio, DURACIONES[servicio] || 45);
 
     var ini = new Date(fechaCita);
     ini.setHours(parseInt(horaInicio.split(":")[0],10),
                  parseInt(horaInicio.split(":")[1],10),0,0);
-    var duracion = DURACIONES[servicio] || 30;
+    var duracion = DURACIONES[servicio] || 45;
     var fin = new Date(ini.getTime()+duracion*60000);
 
     // Enlace de Google Calendar para el cliente (lo confirma con un clic; no requiere iniciar sesión)
