@@ -24,6 +24,31 @@
       <span class="fecha-hoy" id="fechaHoy"></span>
     </header>
 
+    <!-- ================= AVISO: cita previa y pago anticipado ================= -->
+    <section class="aviso-cita" aria-labelledby="avisoTitulo">
+      <h2 class="aviso-titulo" id="avisoTitulo">📅 Trabajo por cita previa</h2>
+      <p class="aviso-texto">
+        Este servicio tiene un costo adicional y te garantiza puntualidad y
+        comodidad (sin hacer turno).
+      </p>
+
+      <p class="aviso-subtitulo">✅ Pago adelantado para agendar (transferencia o efectivo):</p>
+      <div class="aviso-cuenta">
+        <span class="aviso-cuenta-nombre">Fraynid Valdez</span>
+        <span class="aviso-cuenta-fila"><strong>Cédula</strong> 40209830427</span>
+        <span class="aviso-cuenta-fila"><strong>Banreservas</strong> 9607783888</span>
+        <span class="aviso-cuenta-fila"><strong>BHD</strong> 34043540012</span>
+        <span class="aviso-cuenta-fila"><strong>Qik</strong> 1006659884</span>
+      </div>
+      <p class="aviso-texto">📌 Envía tu comprobante por WhatsApp al confirmar la cita.</p>
+
+      <div class="aviso-regla">
+        <p>⏰ <strong>10 minutos</strong> de tolerancia después de la hora acordada.</p>
+        <p>⚠️ Luego de eso pierdes el turno y aplica una <strong>penalización del 40%</strong> del
+          pago (no reembolsable), solo si no te presentas o no avisas con tiempo.</p>
+      </div>
+    </section>
+
     <!-- Paso 1 -->
     <section class="paso" id="paso1">
       <h2 class="paso-titulo"><span class="paso-num">1</span>¿Qué servicio deseas?</h2>
@@ -109,6 +134,15 @@
       <input class="campo" id="telefono" type="tel" inputmode="numeric" autocomplete="tel"
              placeholder="Ej. 555 123 4567" aria-label="Tu teléfono" enterkeyhint="done">
     </section>
+
+    <!-- Paso 7 -->
+    <section class="paso" id="paso7">
+      <label class="aviso-check">
+        <input type="checkbox" id="aceptoAviso">
+        <span>He leído y acepto el pago adelantado, la tolerancia de 10 minutos y la
+          penalización del 40% por inasistencia.</span>
+      </label>
+    </section>
   </main>
 
   <!-- ================= CONFIRMACIÓN ================= -->
@@ -130,6 +164,9 @@
       <div class="resumen-fila"><dt>Barbero</dt><dd id="rBarbero"></dd></div>
     </dl>
 
+    <p class="conf-recordatorio">📌 No olvides enviar tu comprobante de pago. Recuerda: 10 minutos
+      de tolerancia y 40% de penalización si no te presentas ni avisas.</p>
+
     <div class="acciones">
       <a class="btn-accion btn-whatsapp" id="btnWhatsapp" target="_blank" rel="noopener">
         <span class="icono" aria-hidden="true">💬</span><span id="btnWhatsappTexto">Avisar por WhatsApp</span>
@@ -145,6 +182,17 @@
   <!-- Botón principal -->
   <div class="barra-reservar" id="barraReservar">
     <button type="button" class="btn-reservar" id="btnReservar" disabled>Reservar cita</button>
+  </div>
+
+  <!-- ================= MODAL: régimen de consecuencia ================= -->
+  <div class="modal-overlay" id="modalAviso" role="dialog" aria-modal="true" aria-labelledby="modalAvisoTitulo">
+    <div class="modal-caja">
+      <h2 class="modal-titulo" id="modalAvisoTitulo">⚠️ Antes de elegir tu hora</h2>
+      <p class="modal-texto">⏰ Tienes <strong>10 minutos</strong> de tolerancia después de la hora acordada.</p>
+      <p class="modal-texto">Luego de eso pierdes el turno y aplica una <strong>penalización del 40%</strong>
+        del pago (no reembolsable), solo si no te presentas o no avisas con tiempo.</p>
+      <button type="button" class="modal-btn" id="modalAvisoBtn">Entendido</button>
+    </div>
   </div>
 </div>
 

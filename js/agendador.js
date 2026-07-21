@@ -38,6 +38,22 @@
 
   var estado = { servicio:null, barbero:null, fecha:null, hora:null };
 
+  // ---------- Modal del régimen de consecuencia (10 min de tolerancia / 40% de penalización) ----------
+  // Se muestra una sola vez por visita, justo cuando el cliente llega a elegir fecha y hora
+  // (el momento en que está a punto de comprometer un horario).
+  var modalAvisoMostrado = false;
+  var modalAviso = document.getElementById("modalAviso");
+  var modalAvisoBtn = document.getElementById("modalAvisoBtn");
+
+  function mostrarModalAviso(){
+    if(modalAvisoMostrado) return;
+    modalAvisoMostrado = true;
+    modalAviso.classList.add("visible");
+  }
+  modalAvisoBtn.addEventListener("click",function(){
+    modalAviso.classList.remove("visible");
+  });
+
   // Pide permiso de notificaciones del navegador en cuanto carga la página
   // (sirve si esta pantalla se deja abierta en la tablet/PC del local).
   if("Notification" in window && Notification.permission==="default"){
@@ -280,6 +296,7 @@
 
   var nombre = document.getElementById("nombre");
   var telefono = document.getElementById("telefono");
+  var aceptoAviso = document.getElementById("aceptoAviso");
   var btnReservar = document.getElementById("btnReservar");
   var TEXTO_BTN_RESERVAR = btnReservar.textContent;
 
@@ -320,6 +337,7 @@
         });
       }
       document.getElementById("paso3").scrollIntoView({behavior:"smooth",block:"start"});
+      mostrarModalAviso();
     });
   });
 
@@ -333,11 +351,13 @@
   nombre.addEventListener("keydown",function(e){
     if(e.key==="Enter") telefono.focus();
   });
+  aceptoAviso.addEventListener("change",actualizar);
 
   function completo(){
     return estado.servicio && estado.barbero && estado.fecha && estado.hora &&
            nombre.value.trim().length>=2 &&
-           telefono.value.replace(/\D/g,"").length>=7;
+           telefono.value.replace(/\D/g,"").length>=7 &&
+           aceptoAviso.checked;
   }
 
   function actualizar(){
@@ -507,7 +527,8 @@
 
   document.getElementById("btnNueva").addEventListener("click",function(){
     estado = {servicio:null,barbero:null,fecha:null,hora:null};
-    nombre.value=""; telefono.value="";
+    nombre.value=""; telefono.value=""; aceptoAviso.checked=false;
+    modalAvisoMostrado = false;
     ocupadosActuales = [];
     document.getElementById("btnWhatsappTexto").textContent = "Avisar por WhatsApp";
     var confSub = document.getElementById("confSub");
