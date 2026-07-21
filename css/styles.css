@@ -74,6 +74,20 @@
     padding:8px 16px;border-radius:99px;
   }
 
+  /* ---- Datos de la cuenta para el pago adelantado (paso 7 y confirmación) ---- */
+  .aviso-subtitulo{font-weight:700;margin-bottom:10px;text-align:left;}
+  .aviso-cuenta{
+    background:var(--gris-claro);
+    border-radius:12px;
+    padding:12px 16px;
+    display:flex;flex-direction:column;gap:4px;
+    margin-bottom:18px;
+    text-align:left;
+  }
+  .aviso-cuenta-nombre{font-weight:700;margin-bottom:2px;}
+  .aviso-cuenta-fila{font-size:14.5px;color:var(--gris-oscuro);}
+  .aviso-cuenta-fila strong{color:var(--negro);}
+
   /* ---- Casilla de aceptación del aviso (paso 7) ---- */
   .aviso-check{
     display:flex;align-items:flex-start;gap:12px;
